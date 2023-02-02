@@ -1,7 +1,6 @@
 plugins {
     id "com.modrinth.minotaur" version "2.+"
     id "fabric-loom" version "1.1-SNAPSHOT"
-    id "maven-publish"
 }
 
 sourceCompatibility = targetCompatibility = JavaVersion.VERSION_17
@@ -10,11 +9,22 @@ archivesBaseName = project.archives_base_name
 version = project.mod_version
 group = project.maven_group
 
+configurations {
+    tasks.modrinth.dependsOn(tasks.modrinthSyncBody)
+}
+
 dependencies {
     minecraft "com.mojang:minecraft:${project.minecraft_version}"
     mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+}
+
+loom {
+    File aw = file("src/main/resources/${archivesBaseName}.accesswidener")
+    if (aw.exists()) {
+        accessWidenerPath = aw
+    }
 }
 
 processResources {
@@ -40,11 +50,15 @@ remapJar {
 if (System.getenv("MODRINTH_TOKEN") != null) {
     modrinth {
         token = System.getenv("MODRINTH_TOKEN")
-        projectId = "1mjlUnaZ"
+        projectId = archivesBaseName
         versionNumber = version
         uploadFile = remapJar
-        gameVersions = [project.minecraft_version]
-        loaders = [ "fabric" ]
+        loaders = [ "fabric", "quilt" ]
+        syncBodyFrom = rootProject.file("README.md").text
+        gameVersions = [ project.minecraft_version ]
+        dependencies {
+            required.project "fabric-api"
+        }
         System.out.println("Enter changelog:")
         changelog = new BufferedReader(new InputStreamReader(System.in)).readLine()
     }
