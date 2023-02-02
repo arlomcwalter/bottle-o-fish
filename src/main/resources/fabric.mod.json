@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "bottle-o-fish",
+  "version": "${version}",
+  "name": "Bottle O' Fish",
+  "description": "Adds the bottle equivalent of the bucket of fish.",
+  "authors": [
+    "seasnail"
+  ],
+  "contact": {
+    "sources": "https://github.com/arlomcwalter/bottle-o-fish"
+  },
+  "license": "GPL-3.0",
+  "icon": "assets/bottle-o-fish/icon.png",
+  "environment": "*",
+  "entrypoints": {
+    "main": [
+      "me.seasnail.bottleofish.BottleOFish"
+    ]
+  },
+  "mixins": [
+    "bottle-o-fish.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=0.14.13",
+    "minecraft": "~1.19.3",
+    "java": ">=17",
+    "fabric-api": "*"
+  }
+}
